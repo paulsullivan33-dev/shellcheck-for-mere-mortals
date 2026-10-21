@@ -1,0 +1,57 @@
+$ shellcheck examples/disk-alert.sh
+
+In examples/disk-alert.sh line 4:
+read -p "Filesystem to check [/]: " fs
+^--^ SC2162 (info): read without -r will mangle backslashes.
+
+
+In examples/disk-alert.sh line 5:
+if [ -z $fs ]; then
+        ^-^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+if [ -z "$fs" ]; then
+
+
+In examples/disk-alert.sh line 8:
+use=`df $fs | tail -1 | awk '{print $5}' | tr -d %`
+    ^-- SC2006 (style): Use $(...) notation instead of legacy backticks `...`.
+        ^-^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+use=$(df "$fs" | tail -1 | awk '{print $5}' | tr -d %)
+
+
+In examples/disk-alert.sh line 9:
+if [ $use == $limit ]; then
+     ^--^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+if [ "$use" == $limit ]; then
+
+
+In examples/disk-alert.sh line 12:
+if [ $use > $limit ]; then
+     ^--^ SC2086 (info): Double quote to prevent globbing and word splitting.
+          ^-- SC2071 (error): > is for string comparisons. Use -gt instead.
+
+Did you mean: 
+if [ "$use" > $limit ]; then
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2071 -- > is for string comparisons. Use ...
+  https://www.shellcheck.net/wiki/SC2086 -- Double quote to prevent globbing ...
+  https://www.shellcheck.net/wiki/SC2162 -- read without -r will mangle backs...
+[exit 1]
+
+$ cd alert-demo && printf '/\n' | bash disk-alert.sh
+Over the limit: 12 percent used on /
+[exit 0]
+
+$ ls
+90
+disk-alert.sh
+
+$ shellcheck examples/disk-alert-fixed.sh
+[exit 0]
+

@@ -1,0 +1,92 @@
+The ShellCheck lab — every specimen and why it exists
+
+All scripts are in this folder (examples/). Buggy specimens were
+written with their faults planted; each has a corrected twin with
+"-fixed" in its name, and ShellCheck passes every twin. Working
+transcripts are in ../shellcheck-lab/transcripts/.
+
+THE SPECIMENS
+
+clean.sh
+  Six lines, no faults: the pass mark. Prints a folder summary.
+  Used in chapter 1 to show that a pass is silence plus exit 0.
+
+rename-photos.sh
+  A photo renamer: unguarded cd (SC2164), unquoted variables
+  throughout (SC2086), a loop over `ls` output (SC2045, SC2035),
+  backticks three times (SC2006), `expr` arithmetic (SC2003), an
+  unquoted $@ at the end (SC2068). Twelve findings in all.
+  Chapter 3 runs it against names with spaces: it renames one
+  file in three, miscounts, and exits 0.
+rename-photos-fixed.sh
+  The same script repaired: quoted, guarded, glob loop, $((..)).
+
+backup.sh
+  A dated folder backup: backticks (SC2006), command
+  substitution unquoted (SC2046), unquoted paths (SC2086), a
+  useless cat (SC2002), and an unused variable, speed (SC2034).
+backup-fixed.sh
+  The same script repaired, including `wc -l < file`.
+
+trim-logs.sh
+  A log trimmer claiming to be #!/bin/sh: unused variable
+  scratch (SC2034), unguarded cd (SC2164), unquoted filenames
+  (SC2086), backticked date unquoted (SC2046, SC2006). Nothing
+  in it exceeds warning severity, which chapter 9 uses.
+trim-logs-fixed.sh
+  The same script repaired, still honest sh.
+
+disk-alert.sh
+  An interactive disk-space alerter with the lab's two genuine
+  traps: read without -r (SC2162), and `[ $use > $limit ]`
+  (SC2071) — inside [ ], > is a redirection, not a comparison.
+  Run for real (transcript t07), it announces "Over the limit:
+  11 percent used" on an 11%-full disk and leaves an empty file
+  named 90 behind.
+disk-alert-fixed.sh
+  The same script with -r and the -eq / -gt operators.
+
+args.sh
+  About the script's own arguments: loops over $* (SC2048) and
+  $@ (SC2068) unquoted. Run with "my photo.jpg" as one argument,
+  both loops see three items instead of two.
+args-fixed.sh
+  "$@" for the loop, "$*" (quoted) for the deliberate join.
+
+tests.sh
+  Test idioms: [ -n $name ] (SC2070), [ $count == 3 ], and
+  [[ $count > 2 ]] (SC2071). Run with a count of 10, the [[ ]]
+  line compares strings and fails to say "More than two".
+  Judged as sh it also draws SC3014 (== in POSIX [ ]) and
+  SC3010 ([[ ]] itself).
+tests-fixed.sh
+  Quoted -n, -eq for equality, -gt inside [[ ]].
+
+portable.sh
+  Bash habits under a #!/bin/sh shebang: [[ ]] (SC3010), an
+  array (SC3030, SC3054), $RANDOM (SC3028). Judged as bash
+  (-s bash) it is completely clean; the fault is the promise,
+  not the code.
+
+config-fragment.sh
+  Settings meant to be sourced, never run: no shebang, two
+  variables nothing in the file uses. Carries the directives
+  that answer both — shell=bash for the missing shebang, and a
+  recorded disable=SC2034 for the false alarm.
+uses-config.sh
+  Sources the fragment. Draws SC1091 (info) by default;
+  clean under -x.
+
+FIXTURES (in ../shellcheck-lab/fixtures/, made by the chapters)
+
+frag.sh   The config fragment with its directives removed:
+          SC2148 plus two SC2034s (chapter 10).
+dir.sh    A three-line script whose disable=SC2164 proves that
+          a directive silences one check and leaves its line's
+          other finding speaking (chapter 10).
+broken.sh An if with no fi: bash -n fails it (exit 2) and
+          ShellCheck fails it with parse errors (chapter 13).
+bin/      Two specimens under working names with no .sh
+          extension (folder-summary = clean.sh, check-things =
+          tests.sh), for the recipes chapter: ShellCheck reads
+          the shebang, not the suffix.

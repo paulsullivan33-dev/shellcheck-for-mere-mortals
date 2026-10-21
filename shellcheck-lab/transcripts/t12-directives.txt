@@ -1,0 +1,60 @@
+$ cat shellcheck-lab/fixtures/frag.sh
+# Settings, no directives.
+BACKUP_ROOT=/mnt/backupdrive
+RETENTION_DAYS=14
+
+$ shellcheck shellcheck-lab/fixtures/frag.sh
+
+In shellcheck-lab/fixtures/frag.sh line 1:
+# Settings, no directives.
+^-- SC2148 (error): Tips depend on target shell and yours is unknown. Add a shebang or a 'shell' directive.
+
+
+In shellcheck-lab/fixtures/frag.sh line 2:
+BACKUP_ROOT=/mnt/backupdrive
+^---------^ SC2034 (warning): BACKUP_ROOT appears unused. Verify use (or export if used externally).
+
+
+In shellcheck-lab/fixtures/frag.sh line 3:
+RETENTION_DAYS=14
+^------------^ SC2034 (warning): RETENTION_DAYS appears unused. Verify use (or export if used externally).
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2148 -- Tips depend on target shell and y...
+  https://www.shellcheck.net/wiki/SC2034 -- BACKUP_ROOT appears unused. Verif...
+[exit 1]
+
+$ shellcheck examples/config-fragment.sh
+[exit 0]
+
+$ shellcheck examples/uses-config.sh
+
+In examples/uses-config.sh line 3:
+source ./config-fragment.sh
+       ^------------------^ SC1091 (info): Not following: ./config-fragment.sh was not specified as input (see shellcheck -x).
+
+For more information:
+  https://www.shellcheck.net/wiki/SC1091 -- Not following: ./config-fragment....
+[exit 1]
+
+$ shellcheck -x uses-config.sh
+[exit 0]
+
+$ cat shellcheck-lab/fixtures/dir.sh
+#!/bin/bash
+# shellcheck disable=SC2164
+cd $1
+
+$ shellcheck shellcheck-lab/fixtures/dir.sh
+
+In shellcheck-lab/fixtures/dir.sh line 3:
+cd $1
+   ^-- SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+cd "$1"
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2086 -- Double quote to prevent globbing ...
+[exit 1]
+

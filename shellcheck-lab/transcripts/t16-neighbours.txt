@@ -1,0 +1,34 @@
+$ bash -n examples/disk-alert.sh
+[exit 0]
+
+$ cat shellcheck-lab/fixtures/broken.sh
+#!/bin/bash
+if [ "$1" = x ]; then
+  echo hi
+
+$ bash -n shellcheck-lab/fixtures/broken.sh
+shellcheck-lab/fixtures/broken.sh: line 4: syntax error: unexpected end of file
+[exit 2]
+
+$ shellcheck shellcheck-lab/fixtures/broken.sh
+
+In shellcheck-lab/fixtures/broken.sh line 2:
+if [ "$1" = x ]; then
+^-- SC1046 (error): Couldn't find 'fi' for this 'if'.
+^-- SC1073 (error): Couldn't parse this if expression. Fix to allow more checks.
+
+
+In shellcheck-lab/fixtures/broken.sh line 4:
+
+^-- SC1047 (error): Expected 'fi' matching previously mentioned 'if'.
+^-- SC1072 (error): Expected 'fi'. Fix any mentioned problems and try again.
+
+For more information:
+  https://www.shellcheck.net/wiki/SC1046 -- Couldn't find 'fi' for this 'if'.
+  https://www.shellcheck.net/wiki/SC1047 -- Expected 'fi' matching previously...
+  https://www.shellcheck.net/wiki/SC1072 -- Expected 'fi'. Fix any mentioned ...
+[exit 1]
+
+$ command -v shfmt
+[exit 1]
+

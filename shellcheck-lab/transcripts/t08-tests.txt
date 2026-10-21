@@ -1,0 +1,69 @@
+$ shellcheck examples/tests.sh
+
+In examples/tests.sh line 5:
+if [ -n $name ]; then
+        ^---^ SC2070 (error): -n doesn't work with unquoted arguments. Quote or use [[ ]].
+        ^---^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+if [ -n "$name" ]; then
+
+
+In examples/tests.sh line 8:
+if [ $count == 3 ]; then
+     ^----^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+if [ "$count" == 3 ]; then
+
+
+In examples/tests.sh line 11:
+if [[ $count > 2 ]]; then
+             ^-- SC2071 (error): > is for string comparisons. Use -gt instead.
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2070 -- -n doesn't work with unquoted arg...
+  https://www.shellcheck.net/wiki/SC2071 -- > is for string comparisons. Use ...
+  https://www.shellcheck.net/wiki/SC2086 -- Double quote to prevent globbing ...
+[exit 1]
+
+$ shellcheck -s sh examples/tests.sh
+
+In examples/tests.sh line 5:
+if [ -n $name ]; then
+        ^---^ SC2070 (error): -n doesn't work with unquoted arguments. Quote or use [[ ]].
+        ^---^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+if [ -n "$name" ]; then
+
+
+In examples/tests.sh line 8:
+if [ $count == 3 ]; then
+     ^----^ SC2086 (info): Double quote to prevent globbing and word splitting.
+            ^-- SC3014 (warning): In POSIX sh, == in place of = is undefined.
+
+Did you mean: 
+if [ "$count" == 3 ]; then
+
+
+In examples/tests.sh line 11:
+if [[ $count > 2 ]]; then
+   ^--------------^ SC3010 (warning): In POSIX sh, [[ ]] is undefined.
+             ^-- SC2071 (error): > is for string comparisons. Use -gt instead.
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2070 -- -n doesn't work with unquoted arg...
+  https://www.shellcheck.net/wiki/SC2071 -- > is for string comparisons. Use ...
+  https://www.shellcheck.net/wiki/SC3010 -- In POSIX sh, [[ ]] is undefined.
+[exit 1]
+
+$ bash examples/tests.sh bob 10
+Name given
+[exit 0]
+
+$ bash examples/tests-fixed.sh bob 10
+Name given
+More than two
+[exit 0]
+

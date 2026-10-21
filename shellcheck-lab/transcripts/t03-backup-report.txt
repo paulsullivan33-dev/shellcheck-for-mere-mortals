@@ -1,0 +1,51 @@
+$ shellcheck examples/backup.sh
+
+In examples/backup.sh line 5:
+stamp=`date +%F`
+      ^--------^ SC2006 (style): Use $(...) notation instead of legacy backticks `...`.
+
+Did you mean: 
+stamp=$(date +%F)
+
+
+In examples/backup.sh line 6:
+mkdir -p $dst/$stamp
+              ^----^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+mkdir -p $dst/"$stamp"
+
+
+In examples/backup.sh line 7:
+cp -r $src $dst/$stamp
+      ^--^ SC2086 (info): Double quote to prevent globbing and word splitting.
+                ^----^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+cp -r "$src" $dst/"$stamp"
+
+
+In examples/backup.sh line 8:
+cat "$dst/$stamp/documents/list.txt" | wc -l
+    ^-- SC2002 (style): Useless cat. Consider 'cmd < file | ..' or 'cmd file | ..' instead.
+
+
+In examples/backup.sh line 9:
+echo Backup finished at `date +%T`
+                        ^--------^ SC2046 (warning): Quote this to prevent word splitting.
+                        ^--------^ SC2006 (style): Use $(...) notation instead of legacy backticks `...`.
+
+Did you mean: 
+echo Backup finished at $(date +%T)
+
+
+In examples/backup.sh line 10:
+speed=fast
+^---^ SC2034 (warning): speed appears unused. Verify use (or export if used externally).
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2034 -- speed appears unused. Verify use ...
+  https://www.shellcheck.net/wiki/SC2046 -- Quote this to prevent word splitt...
+  https://www.shellcheck.net/wiki/SC2086 -- Double quote to prevent globbing ...
+[exit 1]
+

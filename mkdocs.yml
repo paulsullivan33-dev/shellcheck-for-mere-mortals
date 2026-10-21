@@ -1,0 +1,27 @@
+site_name: ShellCheck for Mere Mortals
+site_description: Plain-language linting of shell scripts. Reading ShellCheck reports, quoting and word splitting, star and at, tests that lie, dialects and severity, silencing with a paper trail, and gates that refuse faulty scripts, practised on a lab of everyday scripts with planted faults.
+site_url: https://paulsullivan33-dev.github.io/shellcheck-for-mere-mortals/
+
+# Guides live at the repo root (nice for GitHub browsing).
+# The deploy workflow copies them into docs/ before building.
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - What ShellCheck Is: what-shellcheck-is.md
+  - Reading the Report: reading-the-report.md
+  - Quoting and Splitting: quoting-and-splitting.md
+  - Star and At: star-and-at.md
+  - Old Habits: old-habits.md
+  - Guards and Leftovers: guards-and-leftovers.md
+  - Tests That Lie: tests-that-lie.md
+  - Dialects: dialects.md
+  - Severity: severity.md
+  - Silencing, With a Paper Trail: silencing.md
+  - Formats and Gates: formats-and-gates.md
+  - Recipes: recipes.md
+  - The Neighbours: the-neighbours.md
+  - Troubleshooting: troubleshooting.md
+  - Glossary: glossary.md
+  - Writing Criteria: criteria.md

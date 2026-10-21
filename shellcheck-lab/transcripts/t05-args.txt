@@ -1,0 +1,32 @@
+$ shellcheck examples/args.sh
+
+In examples/args.sh line 5:
+for a in $*
+         ^-- SC2048 (warning): Use "$@" (with quotes) to prevent whitespace problems.
+
+
+In examples/args.sh line 9:
+for a in $@
+         ^-- SC2068 (error): Double quote array expansions to avoid re-splitting elements.
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2068 -- Double quote array expansions to ...
+  https://www.shellcheck.net/wiki/SC2048 -- Use "$@" (with quotes) to prevent...
+[exit 1]
+
+$ bash examples/args.sh "my photo.jpg" notes.txt
+As one string: my photo.jpg notes.txt
+split by star: [my]
+split by star: [photo.jpg]
+split by star: [notes.txt]
+split by at: [my]
+split by at: [photo.jpg]
+split by at: [notes.txt]
+[exit 0]
+
+$ bash examples/args-fixed.sh "my photo.jpg" notes.txt
+intact: [my photo.jpg]
+intact: [notes.txt]
+As one string: my photo.jpg notes.txt
+[exit 0]
+

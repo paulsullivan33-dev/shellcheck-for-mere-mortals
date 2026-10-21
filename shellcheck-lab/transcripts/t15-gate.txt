@@ -1,0 +1,64 @@
+$ shellcheck -S warning -f gcc examples/rename-photos.sh examples/backup.sh examples/trim-logs.sh examples/disk-alert.sh examples/tests.sh examples/args.sh examples/portable.sh
+examples/rename-photos.sh:5:1: warning: Use 'cd ... || exit' or 'cd ... || return' in case cd fails. [SC2164]
+examples/rename-photos.sh:7:10: error: Iterating over ls output is fragile. Use globs. [SC2045]
+examples/rename-photos.sh:13:16: error: Double quote array expansions to avoid re-splitting elements. [SC2068]
+examples/backup.sh:9:25: warning: Quote this to prevent word splitting. [SC2046]
+examples/backup.sh:10:1: warning: speed appears unused. Verify use (or export if used externally). [SC2034]
+examples/trim-logs.sh:5:1: warning: scratch appears unused. Verify use (or export if used externally). [SC2034]
+examples/trim-logs.sh:6:1: warning: Use 'cd ... || exit' or 'cd ... || return' in case cd fails. [SC2164]
+examples/trim-logs.sh:12:17: warning: Quote this to prevent word splitting. [SC2046]
+examples/disk-alert.sh:12:11: error: > is for string comparisons. Use -gt instead. [SC2071]
+examples/tests.sh:5:9: error: -n doesn't work with unquoted arguments. Quote or use [[ ]]. [SC2070]
+examples/tests.sh:11:14: error: > is for string comparisons. Use -gt instead. [SC2071]
+examples/args.sh:5:10: warning: Use "$@" (with quotes) to prevent whitespace problems. [SC2048]
+examples/args.sh:9:10: error: Double quote array expansions to avoid re-splitting elements. [SC2068]
+examples/portable.sh:5:4: warning: In POSIX sh, [[ ]] is undefined. [SC3010]
+examples/portable.sh:10:6: warning: In POSIX sh, arrays are undefined. [SC3030]
+examples/portable.sh:11:16: warning: In POSIX sh, array references are undefined. [SC3054]
+examples/portable.sh:12:10: warning: In POSIX sh, RANDOM is undefined. [SC3028]
+[exit 1]
+
+$ shellcheck -S warning examples/clean.sh examples/rename-photos-fixed.sh examples/backup-fixed.sh examples/trim-logs-fixed.sh examples/disk-alert-fixed.sh examples/args-fixed.sh examples/tests-fixed.sh examples/config-fragment.sh examples/uses-config.sh
+[exit 0]
+
+$ cat .git/hooks/pre-commit
+#!/bin/bash
+# Refuse the commit if ShellCheck (warning and above) objects
+# to any shell script being committed.
+files=$(git diff --cached --name-only --diff-filter=ACM | grep -e '\.sh$' || true)
+[ -z "$files" ] && exit 0
+# shellcheck disable=SC2086
+shellcheck -S warning $files
+[exit 0]
+
+$ git add trim-logs.sh && git commit -m 'add the log trimmer'
+
+In trim-logs.sh line 5:
+scratch=/var/tmp
+^-----^ SC2034 (warning): scratch appears unused. Verify use (or export if used externally).
+
+
+In trim-logs.sh line 6:
+cd $logdir
+^--------^ SC2164 (warning): Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+
+Did you mean: 
+cd $logdir || exit
+
+
+In trim-logs.sh line 12:
+echo Trimmed on `date +%F`
+                ^--------^ SC2046 (warning): Quote this to prevent word splitting.
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2034 -- scratch appears unused. Verify us...
+  https://www.shellcheck.net/wiki/SC2046 -- Quote this to prevent word splitt...
+  https://www.shellcheck.net/wiki/SC2164 -- Use 'cd ... || exit' or 'cd ... |...
+[exit 1]
+
+$ git reset -q && git add trim-logs-fixed.sh && git commit -m 'add the fixed trimmer'
+[main (root-commit) 974c1d3] add the fixed trimmer
+ 1 file changed, 11 insertions(+)
+ create mode 100644 trim-logs-fixed.sh
+[exit 0]
+

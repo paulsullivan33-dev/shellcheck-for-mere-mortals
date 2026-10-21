@@ -1,0 +1,39 @@
+$ shellcheck -f gcc examples/backup.sh
+examples/backup.sh:5:7: note: Use $(...) notation instead of legacy backticks `...`. [SC2006]
+examples/backup.sh:6:15: note: Double quote to prevent globbing and word splitting. [SC2086]
+examples/backup.sh:7:7: note: Double quote to prevent globbing and word splitting. [SC2086]
+examples/backup.sh:7:17: note: Double quote to prevent globbing and word splitting. [SC2086]
+examples/backup.sh:8:5: note: Useless cat. Consider 'cmd < file | ..' or 'cmd file | ..' instead. [SC2002]
+examples/backup.sh:9:25: warning: Quote this to prevent word splitting. [SC2046]
+examples/backup.sh:9:25: note: Use $(...) notation instead of legacy backticks `...`. [SC2006]
+examples/backup.sh:10:1: warning: speed appears unused. Verify use (or export if used externally). [SC2034]
+[exit 1]
+
+$ shellcheck -f json examples/trim-logs.sh
+[{"file":"examples/trim-logs.sh","line":5,"endLine":5,"column":1,"endColumn":8,"level":"warning","code":2034,"message":"scratch appears unused. Verify use (or export if used externally).","fix":null},{"file":"examples/trim-logs.sh","line":6,"endLine":6,"column":1,"endColumn":11,"level":"warning","code":2164,"message":"Use 'cd ... || exit' or 'cd ... || return' in case cd fails.","fix":{"replacements":[{"column":11,"endColumn":11,"endLine":6,"insertionPoint":"beforeStart","line":6,"precedence":5,"replacement":" || exit"}]}},{"file":"examples/trim-logs.sh","line":9,"endLine":9,"column":17,"endColumn":21,"level":"info","code":2086,"message":"Double quote to prevent globbing and word splitting.","fix":{"replacements":[{"column":17,"endColumn":17,"endLine":9,"insertionPoint":"afterEnd","line":9,"precedence":10,"replacement":"\""},{"column":21,"endColumn":21,"endLine":9,"insertionPoint":"beforeStart","line":9,"precedence":10,"replacement":"\""}]}},{"file":"examples/trim-logs.sh","line":9,"endLine":9,"column":24,"endColumn":28,"level":"info","code":2086,"message":"Double quote to prevent globbing and word splitting.","fix":{"replacements":[{"column":24,"endColumn":24,"endLine":9,"insertionPoint":"afterEnd","line":9,"precedence":11,"replacement":"\""},{"column":28,"endColumn":28,"endLine":9,"insertionPoint":"beforeStart","line":9,"precedence":11,"replacement":"\""}]}},{"file":"examples/trim-logs.sh","line":10,"endLine":10,"column":6,"endColumn":10,"level":"info","code":2086,"message":"Double quote to prevent globbing and word splitting.","fix":{"replacements":[{"column":6,"endColumn":6,"endLine":10,"insertionPoint":"afterEnd","line":10,"precedence":10,"replacement":"\""},{"column":10,"endColumn":10,"endLine":10,"insertionPoint":"beforeStart","line":10,"precedence":10,"replacement":"\""}]}},{"file":"examples/trim-logs.sh","line":10,"endLine":10,"column":15,"endColumn":19,"level":"info","code":2086,"message":"Double quote to prevent globbing and word splitting.","fix":{"replacements":[{"column":15,"endColumn":15,"endLine":10,"insertionPoint":"afterEnd","line":10,"precedence":10,"replacement":"\""},{"column":19,"endColumn":19,"endLine":10,"insertionPoint":"beforeStart","line":10,"precedence":10,"replacement":"\""}]}},{"file":"examples/trim-logs.sh","line":12,"endLine":12,"column":17,"endColumn":27,"level":"warning","code":2046,"message":"Quote this to prevent word splitting.","fix":null},{"file":"examples/trim-logs.sh","line":12,"endLine":12,"column":17,"endColumn":27,"level":"style","code":2006,"message":"Use $(...) notation instead of legacy backticks `...`.","fix":{"replacements":[{"column":17,"endColumn":18,"endLine":12,"insertionPoint":"afterEnd","line":12,"precedence":7,"replacement":"$("},{"column":26,"endColumn":27,"endLine":12,"insertionPoint":"beforeStart","line":12,"precedence":7,"replacement":")"}]}}]
+[exit 1]
+
+$ shellcheck -f diff examples/disk-alert.sh
+--- a/examples/disk-alert.sh
++++ b/examples/disk-alert.sh
+@@ -2,13 +2,13 @@
+ # Ask which filesystem to check, then warn if it is at or over the limit.
+ limit=90
+ read -p "Filesystem to check [/]: " fs
+-if [ -z $fs ]; then
++if [ -z "$fs" ]; then
+   fs=/
+ fi
+-use=`df $fs | tail -1 | awk '{print $5}' | tr -d %`
+-if [ $use == $limit ]; then
++use=$(df "$fs" | tail -1 | awk '{print $5}' | tr -d %)
++if [ "$use" == $limit ]; then
+   echo "Exactly at the limit"
+ fi
+-if [ $use > $limit ]; then
++if [ "$use" > $limit ]; then
+   echo "Over the limit: $use percent used on $fs"
+ fi
+
+[exit 1]
+

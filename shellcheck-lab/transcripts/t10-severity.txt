@@ -1,0 +1,31 @@
+$ shellcheck -S error -f gcc examples/rename-photos.sh | wc -l
+2
+
+$ shellcheck -S warning -f gcc examples/rename-photos.sh | wc -l
+3
+
+$ shellcheck -S info -f gcc examples/rename-photos.sh | wc -l
+8
+
+$ shellcheck -S style -f gcc examples/rename-photos.sh | wc -l
+12
+
+$ shellcheck -S error examples/rename-photos.sh
+
+In examples/rename-photos.sh line 7:
+for f in `ls *.JPG`
+         ^--------^ SC2045 (error): Iterating over ls output is fragile. Use globs.
+
+
+In examples/rename-photos.sh line 13:
+echo All done: $@
+               ^-- SC2068 (error): Double quote array expansions to avoid re-splitting elements.
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2045 -- Iterating over ls output is fragi...
+  https://www.shellcheck.net/wiki/SC2068 -- Double quote array expansions to ...
+[exit 1]
+
+$ shellcheck -S error examples/trim-logs.sh
+[exit 0]
+

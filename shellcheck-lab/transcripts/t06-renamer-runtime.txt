@@ -1,0 +1,30 @@
+$ ls photos-buggy
+IMG 2041.JPG
+IMG 2042.JPG
+plain.JPG
+[exit 0]
+
+$ bash rename-photos.sh photos-buggy
+mv: cannot stat 'IMG': No such file or directory
+mv: cannot stat '2041.JPG': No such file or directory
+mv: cannot stat 'IMG': No such file or directory
+mv: cannot stat '2042.JPG': No such file or directory
+All done: photos-buggy
+[exit 0]
+
+$ ls photos-buggy
+IMG 2041.JPG
+IMG 2042.JPG
+IMG-20261021-5.jpg
+[exit 0]
+
+$ bash rename-photos-fixed.sh photos-fixed
+All done in photos-fixed
+[exit 0]
+
+$ ls photos-fixed
+IMG-20261021-1.jpg
+IMG-20261021-2.jpg
+IMG-20261021-3.jpg
+[exit 0]
+

@@ -1,0 +1,46 @@
+$ ls shellcheck-lab/fixtures/bin
+check-things
+folder-summary
+
+$ shellcheck shellcheck-lab/fixtures/bin/folder-summary
+[exit 0]
+
+$ shellcheck -f gcc shellcheck-lab/fixtures/bin/check-things
+shellcheck-lab/fixtures/bin/check-things:5:9: error: -n doesn't work with unquoted arguments. Quote or use [[ ]]. [SC2070]
+shellcheck-lab/fixtures/bin/check-things:5:9: note: Double quote to prevent globbing and word splitting. [SC2086]
+shellcheck-lab/fixtures/bin/check-things:8:6: note: Double quote to prevent globbing and word splitting. [SC2086]
+shellcheck-lab/fixtures/bin/check-things:11:14: error: > is for string comparisons. Use -gt instead. [SC2071]
+[exit 1]
+
+$ printf 'cd $1\n' | shellcheck -
+
+In - line 1:
+cd $1
+^-- SC2148 (error): Tips depend on target shell and yours is unknown. Add a shebang or a 'shell' directive.
+^---^ SC2164 (warning): Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+   ^-- SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+cd "$1" || exit
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2148 -- Tips depend on target shell and y...
+  https://www.shellcheck.net/wiki/SC2164 -- Use 'cd ... || exit' or 'cd ... |...
+  https://www.shellcheck.net/wiki/SC2086 -- Double quote to prevent globbing ...
+[exit 1]
+
+$ printf 'cd $1\n' | shellcheck -s bash -
+
+In - line 1:
+cd $1
+^---^ SC2164 (warning): Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+   ^-- SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+cd "$1" || exit
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2164 -- Use 'cd ... || exit' or 'cd ... |...
+  https://www.shellcheck.net/wiki/SC2086 -- Double quote to prevent globbing ...
+[exit 1]
+

@@ -1,0 +1,58 @@
+$ shellcheck examples/rename-photos.sh
+
+In examples/rename-photos.sh line 5:
+cd $dir
+^-----^ SC2164 (warning): Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+   ^--^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+cd "$dir" || exit
+
+
+In examples/rename-photos.sh line 7:
+for f in `ls *.JPG`
+         ^--------^ SC2045 (error): Iterating over ls output is fragile. Use globs.
+         ^--------^ SC2006 (style): Use $(...) notation instead of legacy backticks `...`.
+             ^-- SC2035 (info): Use ./*glob* or -- *glob* so names with dashes won't become options.
+
+Did you mean: 
+for f in $(ls *.JPG)
+
+
+In examples/rename-photos.sh line 9:
+  newname=IMG-`date +%Y%m%d`-$n.jpg
+              ^------------^ SC2006 (style): Use $(...) notation instead of legacy backticks `...`.
+
+Did you mean: 
+  newname=IMG-$(date +%Y%m%d)-$n.jpg
+
+
+In examples/rename-photos.sh line 10:
+  mv $f $newname
+     ^-- SC2086 (info): Double quote to prevent globbing and word splitting.
+        ^------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+  mv "$f" "$newname"
+
+
+In examples/rename-photos.sh line 11:
+  n=`expr $n + 1`
+    ^-----------^ SC2006 (style): Use $(...) notation instead of legacy backticks `...`.
+     ^--^ SC2003 (style): expr is antiquated. Consider rewriting this using $((..)), ${} or [[ ]].
+          ^-- SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+  n=$(expr "$n" + 1)
+
+
+In examples/rename-photos.sh line 13:
+echo All done: $@
+               ^-- SC2068 (error): Double quote array expansions to avoid re-splitting elements.
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2045 -- Iterating over ls output is fragi...
+  https://www.shellcheck.net/wiki/SC2068 -- Double quote array expansions to ...
+  https://www.shellcheck.net/wiki/SC2164 -- Use 'cd ... || exit' or 'cd ... |...
+[exit 1]
+

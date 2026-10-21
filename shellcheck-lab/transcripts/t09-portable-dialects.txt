@@ -1,0 +1,30 @@
+$ shellcheck examples/portable.sh
+
+In examples/portable.sh line 5:
+if [[ $name == admin* ]]; then
+   ^-------------------^ SC3010 (warning): In POSIX sh, [[ ]] is undefined.
+
+
+In examples/portable.sh line 10:
+days=(mon tue wed thu fri)
+     ^-------------------^ SC3030 (warning): In POSIX sh, arrays are undefined.
+
+
+In examples/portable.sh line 11:
+echo "Today is ${days[0]}"
+               ^--------^ SC3054 (warning): In POSIX sh, array references are undefined.
+
+
+In examples/portable.sh line 12:
+lucky=$((RANDOM % 10))
+         ^----^ SC3028 (warning): In POSIX sh, RANDOM is undefined.
+
+For more information:
+  https://www.shellcheck.net/wiki/SC3010 -- In POSIX sh, [[ ]] is undefined.
+  https://www.shellcheck.net/wiki/SC3028 -- In POSIX sh, RANDOM is undefined.
+  https://www.shellcheck.net/wiki/SC3030 -- In POSIX sh, arrays are undefined.
+[exit 1]
+
+$ shellcheck -s bash examples/portable.sh
+[exit 0]
+

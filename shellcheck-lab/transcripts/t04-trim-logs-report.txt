@@ -1,0 +1,47 @@
+$ shellcheck examples/trim-logs.sh
+
+In examples/trim-logs.sh line 5:
+scratch=/var/tmp
+^-----^ SC2034 (warning): scratch appears unused. Verify use (or export if used externally).
+
+
+In examples/trim-logs.sh line 6:
+cd $logdir
+^--------^ SC2164 (warning): Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+
+Did you mean: 
+cd $logdir || exit
+
+
+In examples/trim-logs.sh line 9:
+  tail -n $keep $log > $log.tmp
+                ^--^ SC2086 (info): Double quote to prevent globbing and word splitting.
+                       ^--^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+  tail -n $keep "$log" > "$log".tmp
+
+
+In examples/trim-logs.sh line 10:
+  mv $log.tmp $log
+     ^--^ SC2086 (info): Double quote to prevent globbing and word splitting.
+              ^--^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+  mv "$log".tmp "$log"
+
+
+In examples/trim-logs.sh line 12:
+echo Trimmed on `date +%F`
+                ^--------^ SC2046 (warning): Quote this to prevent word splitting.
+                ^--------^ SC2006 (style): Use $(...) notation instead of legacy backticks `...`.
+
+Did you mean: 
+echo Trimmed on $(date +%F)
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2034 -- scratch appears unused. Verify us...
+  https://www.shellcheck.net/wiki/SC2046 -- Quote this to prevent word splitt...
+  https://www.shellcheck.net/wiki/SC2164 -- Use 'cd ... || exit' or 'cd ... |...
+[exit 1]
+

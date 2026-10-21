@@ -1,0 +1,18 @@
+$ printf 'disable=SC2086\n' > .shellcheckrc
+
+$ shellcheck -f gcc tests.sh
+tests.sh:5:9: error: -n doesn't work with unquoted arguments. Quote or use [[ ]]. [SC2070]
+tests.sh:11:14: error: > is for string comparisons. Use -gt instead. [SC2071]
+[exit 1]
+
+$ printf 'shell=sh\n' > .shellcheckrc
+
+$ shellcheck -f gcc tests.sh
+tests.sh:5:9: error: -n doesn't work with unquoted arguments. Quote or use [[ ]]. [SC2070]
+tests.sh:5:9: note: Double quote to prevent globbing and word splitting. [SC2086]
+tests.sh:8:6: note: Double quote to prevent globbing and word splitting. [SC2086]
+tests.sh:8:13: warning: In POSIX sh, == in place of = is undefined. [SC3014]
+tests.sh:11:4: warning: In POSIX sh, [[ ]] is undefined. [SC3010]
+tests.sh:11:14: error: > is for string comparisons. Use -gt instead. [SC2071]
+[exit 1]
+

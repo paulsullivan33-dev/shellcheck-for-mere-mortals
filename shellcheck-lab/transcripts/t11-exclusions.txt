@@ -1,0 +1,19 @@
+$ shellcheck -e SC2086 -f gcc examples/rename-photos.sh
+examples/rename-photos.sh:5:1: warning: Use 'cd ... || exit' or 'cd ... || return' in case cd fails. [SC2164]
+examples/rename-photos.sh:7:10: error: Iterating over ls output is fragile. Use globs. [SC2045]
+examples/rename-photos.sh:7:10: note: Use $(...) notation instead of legacy backticks `...`. [SC2006]
+examples/rename-photos.sh:7:14: note: Use ./*glob* or -- *glob* so names with dashes won't become options. [SC2035]
+examples/rename-photos.sh:9:15: note: Use $(...) notation instead of legacy backticks `...`. [SC2006]
+examples/rename-photos.sh:11:5: note: Use $(...) notation instead of legacy backticks `...`. [SC2006]
+examples/rename-photos.sh:11:6: note: expr is antiquated. Consider rewriting this using $((..)), ${} or [[ ]]. [SC2003]
+examples/rename-photos.sh:13:16: error: Double quote array expansions to avoid re-splitting elements. [SC2068]
+[exit 1]
+
+$ shellcheck -e SC2086,SC2006 -f gcc examples/rename-photos.sh
+examples/rename-photos.sh:5:1: warning: Use 'cd ... || exit' or 'cd ... || return' in case cd fails. [SC2164]
+examples/rename-photos.sh:7:10: error: Iterating over ls output is fragile. Use globs. [SC2045]
+examples/rename-photos.sh:7:14: note: Use ./*glob* or -- *glob* so names with dashes won't become options. [SC2035]
+examples/rename-photos.sh:11:6: note: expr is antiquated. Consider rewriting this using $((..)), ${} or [[ ]]. [SC2003]
+examples/rename-photos.sh:13:16: error: Double quote array expansions to avoid re-splitting elements. [SC2068]
+[exit 1]
+
